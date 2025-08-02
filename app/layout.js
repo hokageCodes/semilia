@@ -1,14 +1,7 @@
 // app/layout.js or app/layout.tsx
 
 import "./globals.css";
-import Navbar from "@/components/layout/Navbar";
-import Footer from "@/components/layout/Footer";
-import CTASection from "@/components/sections/CTASection";
-import { ToastContainer } from "react-toastify";
-import { Analytics } from "@vercel/analytics/next";
 import { AuthProvider } from "@/contexts/AuthContext";
-import "react-toastify/dist/ReactToastify.css";
-
 // ✅ Metadata for Semilia
 export const metadata = {
   title: "Semilia – By Tailor Girl Fashion",
