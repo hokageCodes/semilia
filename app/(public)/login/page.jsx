@@ -1,9 +1,10 @@
-// app/(public)/login/page.tsx
-import LoginForm from '@/components/forms/LoginForm';
+'use client';
 
-export default function PublicLoginPage() {
+import LoginForm from "@/components/forms/LoginForm";
+
+export default function LoginPage() {
   return (
-    <div className="min-h-screen flex items-center justify-center px-4">
+    <div className="min-h-[calc(100vh-160px)] flex items-center justify-center px-4 py-12 sm:px-6 lg:px-8">
       <LoginForm type="user" />
     </div>
   );
