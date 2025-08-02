@@ -1,4 +1,10 @@
+import HeroLayout1 from "@/components/sections/HeroSection";
+
 // app/(public)/page.tsx
 export default function Home() {
-  return <h1>Hello, World</h1>;
+  return (
+    <>
+      <HeroLayout1 />
+    </>
+  )
 }

@@ -287,8 +287,8 @@ export default function Navbar() {
   return (
     <>
       <nav className="bg-black text-cream sticky top-0 z-30 shadow-lg border-b border-yellow">
-        <div className="max-w-7xl mx-auto px-2 sm:px-6 lg:px-4">
-          <div className="flex justify-between items-center h-12 lg:h-20">
+        <div className="max-w-9xl mx-auto px-2 sm:px-4 lg:px-4">
+          <div className="flex justify-between items-center h-16 lg:h-20">
             <div className="hidden lg:flex items-center justify-between w-full">
               <div className="flex items-center space-x-8">
                 <Logo />
