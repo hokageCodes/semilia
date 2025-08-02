@@ -52,7 +52,7 @@ const Hero = () => {
       </div>
 
       {/* Main Content */}
-      <div className="relative w-full max-w-9xl mx-auto px-2 sm:px-6 lg:px-12 grid lg:grid-cols-[65%_35%] gap-16 items-center py-12">
+      <div className="relative w-full max-w-9xl mx-auto px-2 sm:px-6 lg:px-12 grid lg:grid-cols-[65%_35%] gap-16 items-center py-4 md:py-12">
         {/* Left Side - Text Content (65%) */}
         <div className="space-y-8">
           <div className="inline-flex items-center gap-2 bg-black text-white px-4 py-2 rounded-full text-sm font-medium">
