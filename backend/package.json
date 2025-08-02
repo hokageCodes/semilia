@@ -1,11 +1,12 @@
 {
   "name": "backend",
   "version": "1.0.0",
-  "scripts": {
-    "dev": "nodemon server.js",
-    "start": "node server.js",
-    "test": "jest"
-  },
+"scripts": {
+  "dev": "nodemon server.js",
+  "start": "node server.js",
+  "test": "jest",
+  "build": "echo \"No build step necessary\""
+},
   "keywords": [],
   "author": "",
   "license": "ISC",
