@@ -18,6 +18,8 @@ const upload = multer({ storage });
 router.get('/', getProducts);
 router.get('/:id', getProductById);
 router.post('/:id/reviews', protect, createProductReview);
+router.get('/categories', getProductCategories);
+
 
 // Admin
 router.post('/', protect, adminOnly, upload.array('images', 5), createProduct);

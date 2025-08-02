@@ -21,7 +21,7 @@ const productSchema = new mongoose.Schema(
       },
       sub: {
         type: String,
-        enum: ['Dresses', 'Adire Section', 'Tops', 'Pants'],
+        enum: ['Dresses', 'Adire Section', 'Tops', 'Pants'], // Top and pants for men
         required: true,
       },
     },

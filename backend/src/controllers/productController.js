@@ -200,3 +200,34 @@ exports.createProductReview = async (req, res) => {
     res.status(500).json({ message: 'Server error while adding review' });
   }
 };
+
+
+// @desc    Get unique product categories
+// @route   GET /api/products/categories
+// @access  Public
+exports.getProductCategories = async (req, res) => {
+  try {
+    const categories = await Product.aggregate([
+      {
+        $group: {
+          _id: {
+            main: "$category.main",
+            sub: "$category.sub",
+          },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          main: "$_id.main",
+          sub: "$_id.sub",
+        },
+      },
+    ]);
+
+    res.json(categories);
+  } catch (err) {
+    console.error("[Get Categories Error]", err);
+    res.status(500).json({ message: "Failed to fetch categories" });
+  }
+};
