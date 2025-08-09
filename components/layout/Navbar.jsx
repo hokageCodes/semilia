@@ -4,7 +4,9 @@ import React, { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useAuth } from '@/contexts/AuthContext';
+import { useCart } from '@/contexts/CartContext';
 import { useRouter } from 'next/navigation';
+import CartSidebar from '@/components/cart/CartSidebar';
 import {
   Search, ShoppingBag, Menu, X,
   User, ChevronDown, Settings,
@@ -58,7 +60,7 @@ const SearchBar = ({ mobile = false }) => {
 const NavLinks = ({ mobile = false, onClose }) => {
   const links = [
     { name: 'Home', href: '/' },
-    { name: 'Products', href: '/products' },
+    { name: 'Shop', href: '/shop' },
     { name: 'Categories', href: '/categories' },
     { name: 'About', href: '/about' },
     { name: 'Contact', href: '/contact' }
@@ -97,16 +99,33 @@ const NavLinks = ({ mobile = false, onClose }) => {
   );
 };
 
-const CartButton = ({ mobile = false }) => (
-  <button
-    className={`relative p-2 ${mobile ? 'text-white' : 'text-yellow'} hover:opacity-80 transition-opacity`}
-  >
-    <ShoppingBag size={mobile ? 24 : 22} />
-    <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-medium">
-      0
-    </span>
-  </button>
-);
+const CartButton = ({ mobile = false, onCartClick }) => {
+  const { cartCount, loading } = useCart();
+  
+  const handleClick = (e) => {
+    e.preventDefault();
+    if (onCartClick) {
+      onCartClick();
+    }
+  };
+  
+  return (
+    <div className="relative">
+      <button
+        onClick={handleClick}
+        className={`relative p-2 ${mobile ? 'text-black' : 'text-cream hover:text-yellow'} transition-all duration-200 ${loading ? 'opacity-50' : 'hover:opacity-80'}`}
+        disabled={loading}
+      >
+        <ShoppingBag size={mobile ? 24 : 22} />
+        {cartCount > 0 && (
+          <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full min-w-5 h-5 flex items-center justify-center font-medium px-1">
+            {cartCount > 99 ? '99+' : cartCount}
+          </span>
+        )}
+      </button>
+    </div>
+  );
+};
 
 const AuthButtons = ({ mobile = false, onClose }) => (
   <div className={mobile ? "space-y-3" : "flex items-center space-x-3"}>
@@ -234,7 +253,7 @@ const ProfileDropdown = ({ user, logout, router, mobile = false, onClose }) => {
   );
 };
 
-const MobileMenu = ({ isOpen, onClose, user, logout, router }) => {
+const MobileMenu = ({ isOpen, onClose, user, logout, router, onCartClick }) => {
   useEffect(() => {
     if (isOpen) document.body.style.overflow = 'hidden';
     else document.body.style.overflow = 'unset';
@@ -267,7 +286,10 @@ const MobileMenu = ({ isOpen, onClose, user, logout, router }) => {
           <div className="border-t pt-6">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-sm font-semibold text-black uppercase tracking-wide">Account</h3>
-              <CartButton mobile />
+              <CartButton mobile onCartClick={() => {
+                onClose();
+                onCartClick();
+              }} />
             </div>
             {user
               ? <ProfileDropdown user={user} logout={logout} router={router} mobile onClose={onClose} />
@@ -283,6 +305,11 @@ export default function Navbar() {
   const { user, logout } = useAuth();
   const router = useRouter();
   const [isMobileOpen, setIsMobileOpen] = useState(false);
+  const [isCartOpen, setIsCartOpen] = useState(false);
+
+  const handleCartToggle = () => {
+    setIsCartOpen(!isCartOpen);
+  };
 
   return (
     <>
@@ -296,7 +323,7 @@ export default function Navbar() {
               </div>
               <NavLinks />
               <div className="flex items-center space-x-4">
-                <CartButton />
+                <CartButton onCartClick={handleCartToggle} />
                 {user
                   ? <ProfileDropdown user={user} logout={logout} router={router} />
                   : <AuthButtons />}
@@ -306,7 +333,7 @@ export default function Navbar() {
             <div className="flex lg:hidden items-center justify-between w-full px-2 py-2">
               <Logo mobile />
               <div className="flex items-center space-x-3">
-                <CartButton mobile />
+                <CartButton mobile onCartClick={handleCartToggle} />
                 <button
                   onClick={() => setIsMobileOpen(true)}
                   className="text-white p-2 hover:bg-yellow rounded-lg transition-colors"
@@ -325,6 +352,13 @@ export default function Navbar() {
         user={user}
         logout={logout}
         router={router}
+        onCartClick={handleCartToggle}
+      />
+
+      {/* Cart Sidebar */}
+      <CartSidebar 
+        isOpen={isCartOpen} 
+        onClose={() => setIsCartOpen(false)} 
       />
     </>
   );

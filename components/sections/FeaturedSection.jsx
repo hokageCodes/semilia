@@ -1,20 +1,14 @@
+// Example: Updated FeaturedSection with CartButton
 'use client';
 
 import { useEffect, useState } from 'react';
 import axios from '@/lib/axios';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { toast } from 'react-toastify';
+import CartButton from '@/components/cart/CartButton';
 
 const FeaturedSection = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const router = useRouter();
-
-  const handleAddToCart = (product) => {
-    // Stub — replace with your cart logic
-    toast.success(`${product.name} added to cart!`);
-  };
 
   useEffect(() => {
     const fetchFeatured = async () => {
@@ -33,8 +27,8 @@ const FeaturedSection = () => {
 
   if (loading) {
     return (
-      <section className="px-2 lg:px-16 bg-[#FEFBF6]">
-        <h2 className="text-3xl font-bold text-[#3D3C42] mb-8 text-center">
+      <section className="px-2 lg:px-16" style={{ backgroundColor: '#f8eae6' }}>
+        <h2 className="text-3xl font-bold mb-8 text-center" style={{ color: '#000000' }}>
           Featured Products
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6 animate-pulse">
@@ -53,16 +47,16 @@ const FeaturedSection = () => {
 
   if (!Array.isArray(products) || products.length === 0) {
     return (
-      <section className="py-16 px-4 md:px-8 lg:px-16 bg-[#FEFBF6] text-center">
-        <h2 className="text-3xl font-bold text-[#3D3C42] mb-4">Featured Products</h2>
-        <p className="text-gray-500">No featured products available at the moment.</p>
+      <section className="py-16 px-4 md:px-8 lg:px-16 text-center" style={{ backgroundColor: '#f8eae6' }}>
+        <h2 className="text-3xl font-bold mb-4" style={{ color: '#000000' }}>Featured Products</h2>
+        <p style={{ color: '#000000', opacity: '0.6' }}>No featured products available at the moment.</p>
       </section>
     );
   }
 
   return (
-    <section className="py-16 px-4 md:px-8 lg:px-16 bg-[#FEFBF6]">
-      <h2 className="text-3xl font-bold text-[#3D3C42] mb-8 text-center">
+    <section className="py-16 px-4 md:px-8 lg:px-16" style={{ backgroundColor: '#f8eae6' }}>
+      <h2 className="text-3xl font-bold mb-8 text-center" style={{ color: '#000000' }}>
         Featured Products
       </h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
@@ -83,23 +77,19 @@ const FeaturedSection = () => {
 
             <div className="flex-1 flex flex-col">
               <Link href={`/product/${product._id}`}>
-                <h3 className="text-lg font-semibold text-[#3D3C42] mb-1 truncate">
+                <h3 className="text-lg font-semibold mb-1 truncate" style={{ color: '#000000' }}>
                   {product.name}
                 </h3>
               </Link>
-              <p className="text-sm text-gray-600 line-clamp-2 mb-2">
+              <p className="text-sm line-clamp-2 mb-2" style={{ color: '#000000', opacity: '0.6' }}>
                 {product.description}
               </p>
-              <span className="text-[#7F5283] font-bold text-base mb-4">
+              <span className="font-bold text-base mb-4" style={{ color: '#000000' }}>
                 ₦{product.price.toLocaleString()}
               </span>
 
-              <button
-                onClick={() => handleAddToCart(product)}
-                className="mt-auto bg-[#3D3C42] hover:bg-[#3F2E3E] text-white text-sm font-medium px-4 py-2 rounded-xl transition"
-              >
-                Add to Cart
-              </button>
+              {/* Use CartButton instead of custom button */}
+              <CartButton product={product} className="mt-auto" />
             </div>
           </div>
         ))}

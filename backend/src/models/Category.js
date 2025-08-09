@@ -8,6 +8,10 @@ const categorySchema = new mongoose.Schema({
     trim: true,
     unique: true,
   },
+  image: { 
+    type: String, // main category image (Cloudinary URL or static)
+    default: '' 
+  },
   subcategories: [
     {
       name: { type: String, required: true },

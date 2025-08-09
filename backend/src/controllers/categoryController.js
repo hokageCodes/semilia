@@ -1,14 +1,15 @@
 const Category = require('../models/Category');
 
+// controllers/categoryController.js
 exports.createCategory = async (req, res) => {
   try {
-    const { main, subcategories } = req.body;
+    const { main, image, subcategories } = req.body;
 
     if (!main || !Array.isArray(subcategories)) {
       return res.status(400).json({ message: 'main and subcategories[] are required' });
     }
 
-    const category = await Category.create({ main, subcategories });
+    const category = await Category.create({ main, image, subcategories });
     res.status(201).json(category);
   } catch (err) {
     console.error('[Create Category]', err);
@@ -16,6 +17,25 @@ exports.createCategory = async (req, res) => {
   }
 };
 
+exports.updateCategory = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { main, image, subcategories } = req.body;
+
+    const category = await Category.findById(id);
+    if (!category) return res.status(404).json({ message: 'Category not found' });
+
+    if (main) category.main = main;
+    if (image) category.image = image;
+    if (subcategories) category.subcategories = subcategories;
+
+    const updated = await category.save();
+    res.json(updated);
+  } catch (err) {
+    console.error('[Update Category]', err);
+    res.status(500).json({ message: 'Error updating category' });
+  }
+};
 // GET all categories
 exports.getCategories = async (req, res) => {
   try {

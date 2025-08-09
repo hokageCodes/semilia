@@ -1,8 +1,8 @@
-// app/layout.js or app/layout.tsx
-
+// app/layout.js - Updated with CartProvider
 import "./globals.css";
 import { AuthProvider } from "@/contexts/AuthContext";
-// ✅ Metadata for Semilia
+import { CartProvider } from "@/contexts/CartContext";
+
 export const metadata = {
   title: "Semilia – By Tailor Girl Fashion",
   description: "Shop your ready to wear",
@@ -38,12 +38,8 @@ export const metadata = {
     icon: "/favicon.ico",
     apple: "/apple-touch-icon.png",
   },
-  // manifest: "/site.webmanifest",
-  // robots: "index, follow",
-  // authors: [{ name: "TGF Team" }],
 };
 
-// ✅ Separate viewport config
 export const viewport = {
   width: "device-width",
   initialScale: 1,
@@ -56,10 +52,17 @@ export default function RootLayout({ children }) {
         <link rel="icon" href="/favicon.ico" />
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        </head>
+      </head>
       <body>
-        <AuthProvider>{children}</AuthProvider>
+        <AuthProvider>
+          <CartProvider>
+            {children}
+          </CartProvider>
+        </AuthProvider>
       </body>
     </html>
   );
 }
+
+
+

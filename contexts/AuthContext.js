@@ -15,7 +15,14 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     const stored = localStorage.getItem('user');
-    if (stored) setUser(JSON.parse(stored));
+    if (stored) {
+      try {
+        setUser(JSON.parse(stored));
+      } catch (error) {
+        console.error('Error parsing stored user:', error);
+        localStorage.removeItem('user');
+      }
+    }
     setLoading(false);
   }, []);
 
@@ -24,11 +31,14 @@ export const AuthProvider = ({ children }) => {
     setUser(userData);
   };
 
-const logout = () => {
-  localStorage.removeItem('user');
-  localStorage.removeItem('token'); // ✅ remove token too
-  setUser(null);
-};
+  const logout = () => {
+    localStorage.removeItem('user');
+    localStorage.removeItem('token');
+    setUser(null);
+    
+    // Note: We don't clear the guest cart here anymore
+    // The CartContext will handle cart persistence for logged-out users
+  };
 
   return (
     <AuthContext.Provider value={{ user, loading, login, logout }}>
