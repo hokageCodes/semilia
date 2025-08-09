@@ -7,14 +7,14 @@ const streamifier = require('streamifier');
 // @access  Private/Admin
 exports.createProduct = async (req, res) => {
   try {
-    const { name, description, brand, price, countInStock, category } = req.body;
+    const { name, description, brand, price, countInStock, category, isFeatured } = req.body;
 
-    let parsedCategory;
-    try {
-      parsedCategory = JSON.parse(category);
-    } catch (error) {
-      return res.status(400).json({ message: 'Invalid category format. Should be JSON.' });
-    }
+let parsedCategory;
+try {
+  parsedCategory = typeof category === 'string' ? JSON.parse(category) : category;
+} catch (error) {
+  return res.status(400).json({ message: 'Invalid category format. Should be JSON.' });
+}
 
     const uploadedImages = [];
 
@@ -44,6 +44,7 @@ exports.createProduct = async (req, res) => {
       price,
       countInStock,
       category: parsedCategory,
+      isFeatured: isFeatured === 'true' || isFeatured === true, // Handle string/boolean
       createdBy: req.user._id,
       mainImage: uploadedImages[0]?.url || '',
       images: uploadedImages,
@@ -87,13 +88,17 @@ exports.getProducts = async (req, res) => {
 
     const rating = req.query.rating ? { rating: { $gte: Number(req.query.rating) } } : {};
 
-    const filters = { ...keyword, ...category, ...priceFilter, ...rating };
+    // Featured filter
+    const featured = req.query.featured === 'true' ? { isFeatured: true } : {};
+
+    const filters = { ...keyword, ...category, ...priceFilter, ...rating, ...featured };
 
     let sort = { createdAt: -1 };
     const sortOption = req.query.sort?.toLowerCase();
     if (sortOption === 'price-asc') sort = { price: 1 };
     else if (sortOption === 'price-desc') sort = { price: -1 };
     else if (sortOption === 'top-rated') sort = { rating: -1 };
+    else if (sortOption === 'featured') sort = { isFeatured: -1, createdAt: -1 };
 
     const total = await Product.countDocuments(filters);
     const products = await Product.find(filters).sort(sort).skip(skip).limit(limit);
@@ -102,6 +107,28 @@ exports.getProducts = async (req, res) => {
   } catch (err) {
     console.error('[Get Products Error]', err);
     res.status(500).json({ message: 'Failed to fetch products' });
+  }
+};
+
+// @desc    Get featured products
+// @route   GET /api/products/featured
+// @access  Public
+exports.getFeaturedProducts = async (req, res) => {
+  try {
+    const limit = parseInt(req.query.limit) || 8; // Default to 8 featured products
+    
+    const featuredProducts = await Product.find({ isFeatured: true })
+      .sort({ createdAt: -1 })
+      .limit(limit)
+      .select('name price mainImage images rating numReviews category');
+
+    res.json({
+      count: featuredProducts.length,
+      products: featuredProducts
+    });
+  } catch (err) {
+    console.error('[Get Featured Products Error]', err);
+    res.status(500).json({ message: 'Failed to fetch featured products' });
   }
 };
 
@@ -128,7 +155,8 @@ exports.updateProduct = async (req, res) => {
       brand,
       category,
       countInStock,
-      images
+      images,
+      isFeatured
     } = req.body;
 
     const product = await Product.findById(req.params.id);
@@ -141,12 +169,34 @@ exports.updateProduct = async (req, res) => {
     product.category = category || product.category;
     product.countInStock = countInStock || product.countInStock;
     product.images = images || product.images;
+    product.isFeatured = isFeatured !== undefined ? isFeatured : product.isFeatured;
 
     const updated = await product.save();
     res.json(updated);
   } catch (err) {
     console.error('[Update Product Error]', err);
     res.status(500).json({ message: 'Server error while updating product' });
+  }
+};
+
+// @desc    Toggle featured status
+// @route   PATCH /api/products/:id/featured
+// @access  Private/Admin
+exports.toggleFeatured = async (req, res) => {
+  try {
+    const product = await Product.findById(req.params.id);
+    if (!product) return res.status(404).json({ message: 'Product not found' });
+
+    product.isFeatured = !product.isFeatured;
+    const updated = await product.save();
+    
+    res.json({
+      message: `Product ${updated.isFeatured ? 'added to' : 'removed from'} featured products`,
+      product: updated
+    });
+  } catch (err) {
+    console.error('[Toggle Featured Error]', err);
+    res.status(500).json({ message: 'Server error while toggling featured status' });
   }
 };
 
@@ -157,7 +207,7 @@ exports.deleteProduct = async (req, res) => {
     const product = await Product.findById(req.params.id);
     if (!product) return res.status(404).json({ message: 'Product not found' });
 
-    await product.remove();
+    await product.deleteOne(); // Updated from remove() to deleteOne()
     res.json({ message: 'Product removed' });
   } catch (err) {
     console.error('[Delete Product Error]', err);
@@ -200,7 +250,6 @@ exports.createProductReview = async (req, res) => {
     res.status(500).json({ message: 'Server error while adding review' });
   }
 };
-
 
 // @desc    Get unique product categories
 // @route   GET /api/products/categories

@@ -16,6 +16,7 @@ app.use('/api/orders', require('./src/routes/orderRoutes'));
 app.use('/api/users', require('./src/routes/userRoutes'));
 app.use('/api/upload', require('./src/routes/uploadRoutes'));
 app.use('/api/admin', require('./src/routes/adminRoutes'));
+app.use('/api/categories', require('./src/routes/categoryRoutes'));
 
 // Health check
 app.get('/api/health', (req, res) => {

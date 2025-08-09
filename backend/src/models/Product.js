@@ -21,7 +21,7 @@ const productSchema = new mongoose.Schema(
       },
       sub: {
         type: String,
-        enum: ['Dresses', 'Adire Section', 'Tops', 'Pants'], // Top and pants for men
+        enum: ['Dresses', 'Adire Section', 'Tops', 'Pants'],
         required: true,
       },
     },
@@ -42,6 +42,13 @@ const productSchema = new mongoose.Schema(
     numReviews: {
       type: Number,
       default: 0,
+    },
+
+    // Featured product flag
+    isFeatured: {
+      type: Boolean,
+      default: false,
+      index: true, // Add index for faster queries
     },
 
     createdBy: {
@@ -73,5 +80,8 @@ const productSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
+// Index for faster featured product queries
+productSchema.index({ isFeatured: 1, createdAt: -1 });
 
 module.exports = mongoose.model('Product', productSchema);
