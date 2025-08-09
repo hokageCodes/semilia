@@ -13,7 +13,7 @@ const FeaturedSection = () => {
   useEffect(() => {
     const fetchFeatured = async () => {
   try {
-    const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/products/featured?limit=8`);
+    const res = await axios.get('https://semilia-by-tgf.onrender.com/products/featured?limit=8');
     setProducts(res.data.products);
   } catch (err) {
     console.error('Error fetching featured products:', err);
