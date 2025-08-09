@@ -11,7 +11,7 @@ export default function CategoryLayout() {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const res = await axios.get('/categories'); // calls /api/categories
+        const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/categories`); // calls /api/categories
         setCategories(res.data);
       } catch (err) {
         console.error('Error fetching categories:', err);

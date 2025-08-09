@@ -12,16 +12,15 @@ const FeaturedSection = () => {
 
   useEffect(() => {
     const fetchFeatured = async () => {
-      try {
-        const res = await axios.get('/products/featured?limit=8');
-        setProducts(res.data.products);
-      } catch (err) {
-        console.error('Error fetching featured products:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
+  try {
+    const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/products/featured?limit=8`);
+    setProducts(res.data.products);
+  } catch (err) {
+    console.error('Error fetching featured products:', err);
+  } finally {
+    setLoading(false);
+  }
+};
     fetchFeatured();
   }, []);
 
@@ -65,7 +64,7 @@ const FeaturedSection = () => {
             key={product._id}
             className="bg-white rounded-2xl shadow-md hover:shadow-lg transition duration-300 p-4 flex flex-col group"
           >
-            <Link href={`/product/${product._id}`}>
+            <Link href={`${process.env.NEXT_PUBLIC_API_URL}/product/${product._id}`}>
               <div className="h-48 overflow-hidden rounded-xl mb-4">
                 <img
                   src={product.images?.[0]}
@@ -76,7 +75,7 @@ const FeaturedSection = () => {
             </Link>
 
             <div className="flex-1 flex flex-col">
-              <Link href={`/product/${product._id}`}>
+              <Link href={`${process.env.NEXT_PUBLIC_API_URL}/product/${product._id}`}>
                 <h3 className="text-lg font-semibold mb-1 truncate" style={{ color: '#000000' }}>
                   {product.name}
                 </h3>
