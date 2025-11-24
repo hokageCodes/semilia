@@ -1,10 +1,57 @@
 const express = require('express');
-const { register, registerAdmin, login } = require('../controllers/authController');
+const { body } = require('express-validator');
+const { 
+  register, 
+  registerAdmin, 
+  login, 
+  verifyEmail, 
+  resendVerificationCode 
+} = require('../controllers/authController');
 
 const router = express.Router();
 
-router.post('/register', register);
-router.post('/register-admin', registerAdmin); // New admin registration endpoint
-router.post('/login', login);
+// Validation middleware
+const registerValidation = [
+  body('name')
+    .trim()
+    .isLength({ min: 2, max: 50 })
+    .withMessage('Name must be between 2 and 50 characters'),
+  body('email')
+    .isEmail()
+    .normalizeEmail()
+    .withMessage('Please provide a valid email'),
+  body('password')
+    .isLength({ min: 6 })
+    .withMessage('Password must be at least 6 characters long')
+    .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/)
+    .withMessage('Password must contain at least one uppercase letter, one lowercase letter, and one number'),
+  body('phone')
+    .optional()
+    .isMobilePhone()
+    .withMessage('Please provide a valid phone number'),
+];
+
+const loginValidation = [
+  body('email')
+    .isEmail()
+    .normalizeEmail()
+    .withMessage('Please provide a valid email'),
+  body('password')
+    .notEmpty()
+    .withMessage('Password is required'),
+];
+
+const adminRegisterValidation = [
+  ...registerValidation,
+  body('adminSecret')
+    .notEmpty()
+    .withMessage('Admin secret is required'),
+];
+
+router.post('/register', registerValidation, register);
+router.post('/register-admin', adminRegisterValidation, registerAdmin);
+router.post('/login', loginValidation, login);
+router.post('/verify-email', verifyEmail);
+router.post('/resend-verification', resendVerificationCode);
 
 module.exports = router;

@@ -15,10 +15,7 @@ const getUserCart = async (req, res) => {
       await cart.populate('items.product');
     }
     
-    res.json({
-      success: true,
-      data: cart
-    });
+    res.json(cart);
   } catch (error) {
     res.status(500).json({
       success: false,
@@ -69,11 +66,7 @@ const addToCart = async (req, res) => {
     await cart.save();
     await cart.populate('items.product');
     
-    res.json({
-      success: true,
-      message: 'Item added to cart',
-      data: cart
-    });
+    res.json(cart);
   } catch (error) {
     res.status(500).json({
       success: false,
@@ -120,11 +113,7 @@ const updateCartItem = async (req, res) => {
     await cart.save();
     await cart.populate('items.product');
     
-    res.json({
-      success: true,
-      message: 'Cart item updated',
-      data: cart
-    });
+    res.json(cart);
   } catch (error) {
     res.status(500).json({
       success: false,
@@ -155,11 +144,7 @@ const removeFromCart = async (req, res) => {
     await cart.save();
     await cart.populate('items.product');
     
-    res.json({
-      success: true,
-      message: 'Item removed from cart',
-      data: cart
-    });
+    res.json(cart);
   } catch (error) {
     res.status(500).json({
       success: false,
@@ -183,11 +168,7 @@ const clearCart = async (req, res) => {
     
     await cart.save();
     
-    res.json({
-      success: true,
-      message: 'Cart cleared',
-      data: cart
-    });
+    res.json(cart);
   } catch (error) {
     res.status(500).json({
       success: false,
@@ -208,12 +189,9 @@ const getCartSummary = async (req, res) => {
     }
     
     res.json({
-      success: true,
-      data: {
-        totalItems: cart.totalItems,
-        totalPrice: cart.totalPrice,
-        itemCount: cart.items.length
-      }
+      totalItems: cart.totalItems,
+      totalPrice: cart.totalPrice,
+      itemCount: cart.items.length
     });
   } catch (error) {
     res.status(500).json({
