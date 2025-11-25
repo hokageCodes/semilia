@@ -10,7 +10,7 @@ export default function HeroSection() {
         {/* Left Image */}
         <div className="relative">
           <Image
-            src="/assets/feline-bodysuit.jpg"
+            src="/assets/Rose.jpg"
             alt="Fashion"
             fill
             className="object-cover"
