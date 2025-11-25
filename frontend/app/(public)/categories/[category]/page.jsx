@@ -249,8 +249,7 @@ export default function CategoryPage({ params }) {
         </div>
         <Footer />
       </>
-    </Suspense>
-    >
+    }>
       <CategoryPageContent params={params} />
     </Suspense>
   );
