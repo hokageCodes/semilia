@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import { Formik, Form, Field } from 'formik';
@@ -15,7 +15,7 @@ const loginSchema = Yup.object().shape({
   password: Yup.string().required('Password is required'),
 });
 
-export default function AdminLoginPage() {
+function AdminLoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { login, user } = useAuth();
@@ -196,6 +196,18 @@ export default function AdminLoginPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function AdminLoginPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center bg-white">
+        <div className="animate-spin w-12 h-12 border-4 border-yellow border-t-transparent rounded-full" />
+      </div>
+    }>
+      <AdminLoginForm />
+    </Suspense>
   );
 }
 

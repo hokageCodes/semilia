@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
 import { productsAPI } from '@/lib/api';
@@ -10,7 +10,7 @@ import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/sections/Footer';
 import { Search } from 'lucide-react';
 
-export default function SearchPage() {
+function SearchPageContent() {
   const searchParams = useSearchParams();
   const query = searchParams.get('q') || '';
   const [searchTerm, setSearchTerm] = useState(query);
@@ -131,6 +131,22 @@ function ProductCard({ product }) {
         )}
       </div>
     </Link>
+  );
+}
+
+export default function SearchPage() {
+  return (
+    <Suspense fallback={
+      <>
+        <Navbar />
+        <div className="min-h-screen flex items-center justify-center bg-white">
+          <div className="animate-spin w-12 h-12 border-4 border-yellow border-t-transparent rounded-full" />
+        </div>
+        <Footer />
+      </>
+    }>
+      <SearchPageContent />
+    </Suspense>
   );
 }
 

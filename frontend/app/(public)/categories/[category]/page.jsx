@@ -4,14 +4,14 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
 import { productsAPI, categoriesAPI } from '@/lib/api';
 import ProductCard from '@/components/products/ProductCard';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { ListFilter, Grid, List, ChevronDown } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/sections/Footer';
 
-export default function CategoryPage({ params }) {
+function CategoryPageContent({ params }) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -236,5 +236,22 @@ export default function CategoryPage({ params }) {
       </div>
       <Footer />
     </div>
+  );
+}
+
+export default function CategoryPage({ params }) {
+  return (
+    <Suspense fallback={
+      <>
+        <Navbar />
+        <div className="min-h-screen flex items-center justify-center bg-cream">
+          <div className="animate-spin w-12 h-12 border-4 border-yellow border-t-transparent rounded-full" />
+        </div>
+        <Footer />
+      </>
+    </Suspense>
+    >
+      <CategoryPageContent params={params} />
+    </Suspense>
   );
 }
